@@ -1,9 +1,8 @@
 // Node Module Dependencies
 var sqlite3 = require('sqlite3').verbose();
-var path = require('path');
 
 //Local Dependencies
-var appConfig = require('./../../config/app-config.js');
+var appConfig = require('./../../../config/app-config.js');
 
 //Local Variables
 var db;

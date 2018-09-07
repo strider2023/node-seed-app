@@ -1,5 +1,5 @@
 //Local Dependencies
-var sqlite = require('./../db/sqlite');
+var authQuery = require('./../db/sqlite/auth-query.js');
 
 var response;
 
@@ -22,7 +22,7 @@ function router(req, res) {
 
 function login(req, res) {
   if (req.body.email && req.body.password) {
-    validateLogin(req.body.email, req.body.password, function(success) {
+    authQuery.validateLogin(req.body.email, req.body.password, function(success) {
       if (success) {
         response = {
           status: 200,
@@ -48,7 +48,7 @@ function login(req, res) {
 
 function forgotPassword(req, res) {
   if (req.body.email) {
-    validateEmail(req.body.email, function(success) {
+    authQuery.validateEmail(req.body.email, function(success) {
       if (success) {
         response = {
           status: 200,
@@ -68,44 +68,6 @@ function forgotPassword(req, res) {
     res.send(JSON.stringify(response));
   }
 };
-
-// Database functions
-
-function validateLogin(email, password, callback) {
-  var success = false;
-  if (sqlite.getDatabaseInstance()) {
-    var query = `SELECT * FROM credentials WHERE email = '${email}' and password = '${password}'`;
-    sqlite.getDatabaseInstance().all(query, function(err, rows) {
-      if (rows.length > 0) {
-        rows.forEach(function(row) {
-          if (row.email == email && row.password == password) {
-            success = true;
-          }
-        });
-      }
-      callback(success);
-    });
-  } else
-    callback(success);
-}
-
-function validateEmail(email, callback) {
-  var success = false;
-  if (sqlite.getDatabaseInstance()) {
-    var query = `SELECT * FROM credentials WHERE email = '${email}'`;
-    sqlite.getDatabaseInstance().all(query, function(err, rows) {
-      if (rows.length > 0) {
-        rows.forEach(function(row) {
-          if (row.email == email) {
-            success = true;
-          }
-        });
-      }
-      callback(success);
-    });
-  } else
-    callback(success);
-}
 
 module.exports = {
   router: router

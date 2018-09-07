@@ -1,48 +1,25 @@
-var http = require('http');
+// Node Module Dependencies
+var express = require('express');
+var bodyParser = require('body-parser');
+var multer = require('multer');
 var fs = require('fs');
-var url = require('url');
 
-// http.createServer(function (request, response) {
-//    // Send the HTTP header
-//    // HTTP Status: 200 : OK
-//    // Content Type: text/plain
-//    response.writeHead(200, {'Content-Type': 'text/plain'});
-//
-//    // Send the response body as "Hello World"
-//    response.end('Hello World\n');
-// }).listen(8081);
-//
-// // Console will print the message
-// console.log('Server running at http://127.0.0.1:8081/');
+//Local Dependencies
+var appConfig = require('./src/config/app-config');
+var router = require('./src/scripts/router/router');
+var sqlite = require('./src/scripts/db/sqlite/sqlite');
 
-// Create a server
-http.createServer( function (request, response) {
-   // Parse the request containing file name
-   var pathname = url.parse(request.url).pathname;
+var app = express();
+app.use('/public', express.static('public')); // remote sever public access location
+app.use(multer({ dest: '/uploads/' }).any()); // remote sever upload location
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+router.routRequests(app);
 
-   // Print the name of the file for which request is made.
-   console.log("Request for " + pathname + " received.");
-
-   // Read the requested file content from file system
-   fs.readFile(pathname.substr(1), function (err, data) {
-      if (err) {
-         console.log(err);
-         // HTTP Status: 404 : NOT FOUND
-         // Content Type: text/plain
-         response.writeHead(404, {'Content-Type': 'text/html'});
-      }else {
-         //Page found
-         // HTTP Status: 200 : OK
-         // Content Type: text/plain
-         response.writeHead(200, {'Content-Type': 'text/html'});
-
-         // Write the content of the file to response body
-         response.write(data.toString());
-      }
-      // Send the response body
-      response.end();
-   });
-}).listen(8081);
-
-// Console will print the message
-console.log('Server running at http://127.0.0.1:8081/');
+// Init Server
+var server = app.listen(appConfig.server.port, function() {
+  var host = server.address().address;
+  var port = server.address().port;
+  sqlite.openDatabase();
+  console.log("Node Seed app listening at http://%s:%s", host, port);
+});
