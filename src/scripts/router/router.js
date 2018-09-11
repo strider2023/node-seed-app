@@ -7,18 +7,10 @@ function routRequests(app) {
   app.get('/health_check', function(req, res) {
     res.send('Server Running');
   });
-
   // Authentication API Block
-  app.all('*/auth/*', function(req, res) {
-    console.log("Auth");
-    authServices.router(req, res);
-  });
-
+  authServices.router(app);
   // User API Block
-  app.all('*/user/*', function(req, res) {
-    console.log("User");
-    userServices.router(req, res);
-  });
+  userServices.router(app);
 
   //
   // app.post('/file_upload', function(req, res) {

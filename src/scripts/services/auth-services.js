@@ -3,34 +3,28 @@ var authQuery = require('./../db/sqlite/auth-query.js');
 
 var response;
 
-function router(req, res) {
-  console.log(req.url);
+function router(app) {
   response = {
     status: 404,
-    message: 'Not found',
+    message: 'Not Found',
     data: null
   };
-  switch (req.url) {
-    case '/auth/login':
-      response = login(req, res);
-      break;
-    case '/auth/forgot_password':
-      response = forgotPassword(req, res);
-      break;
-  }
+  app.post('*/auth/login', function(req, res) {
+    login(req, res);
+  });
+  app.post('*/auth/forgot_password', function(req, res) {
+    forgotPassword(req, res);
+  });
 }
 
 function login(req, res) {
   if (req.body.email && req.body.password) {
-    authQuery.validateLogin(req.body.email, req.body.password, function(success) {
+    authQuery.validateLogin(req.body.email, req.body.password, function(success, data) {
       if (success) {
         response = {
           status: 200,
           message: 'Success',
-          data: {
-            token: 123456,
-            expires: Date.now()
-          }
+          data: data
         };
       } else {
         response = {
@@ -48,7 +42,7 @@ function login(req, res) {
 
 function forgotPassword(req, res) {
   if (req.body.email) {
-    authQuery.validateEmail(req.body.email, function(success) {
+    authQuery.validateEmail(req.body.email, function(success, data) {
       if (success) {
         response = {
           status: 200,
