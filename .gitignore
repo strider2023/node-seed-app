@@ -62,4 +62,9 @@ typings/
 
 #others
 package-lock.json
-uploads/
+
+# exclude everything
+uploads/*
+
+# exception to the rule
+!uploads/1.gitkeep 
