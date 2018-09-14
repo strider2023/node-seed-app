@@ -3,9 +3,6 @@ var authServices = require('./../services/auth-services.js');
 var userServices = require('./../services/user-services.js');
 
 function routRequests(app) {
-  app.get('/', function(req, res) {
-    res.send('Well you have reached somewhere!');
-  });
   // Health Check API
   app.get('/health_check', function(req, res) {
     res.send('Server Running');
