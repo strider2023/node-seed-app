@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 router.routRequests(app);
 
 // Init Server
-var server = app.listen(appConfig.server.port, function() {
+var server = app.listen(process.env.PORT || appConfig.server.port, function() {
   var host = server.address().address;
   var port = server.address().port;
   sqlite.openDatabase();
