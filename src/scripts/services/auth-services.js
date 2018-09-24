@@ -19,7 +19,7 @@ function router(app) {
 
 function login(req, res) {
   if (req.body.email && req.body.password) {
-    authQuery.validateLogin(req.body.email, req.body.password, function(success, data) {
+    authQuery.validateLogin(req.body.email, req.body.password, res, function(success, data) {
       if (success) {
         response = {
           status: 200,

@@ -1,3 +1,6 @@
+// Node Module Dependencies
+var jwt = require('jsonwebtoken');
+
 //Local Dependencies
 var userQuery = require('./../db/sqlite/user-query.js');
 
@@ -5,12 +8,22 @@ var response;
 
 function router(app) {
   response = {
-    status: 404,
-    message: 'Not Found',
+    status: 500,
+    message: 'Invalid Token',
     data: null
   };
   app.get('*/user/:userId', function(req, res) {
-    getUserInfo(req, res);
+    jwt.verify(req.headers.token, 'secret', function(err, decoded) {
+      if(err || !decoded) {
+        res.send(JSON.stringify(response));
+      } else {
+        console.log(decoded.id + ' ' + req.params.userId);
+        if(decoded.id == req.params.userId)
+          getUserInfo(req, res);
+        else
+          res.send(JSON.stringify(response));
+      }
+    });
   });
   app.put('*/user/update/:userId', function(req, res) {
     updateUserInfo(req, res);

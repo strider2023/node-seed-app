@@ -1,14 +1,19 @@
 //Local Dependencies
 var authServices = require('./../services/auth-services.js');
 var userServices = require('./../services/user-services.js');
+//
+// var storage = require('session-storage').create('redis', {
+//         host: '192.168.1.1'
+//     });
+var storage;
 
-function routRequests(app) {
+function routRequests(app, session) {
   // Health Check API
   app.get('/health_check', function(req, res) {
     res.send('Server Running');
   });
   // Authentication API Block
-  authServices.router(app);
+  authServices.router(app, session);
   // User API Block
   userServices.router(app);
 
